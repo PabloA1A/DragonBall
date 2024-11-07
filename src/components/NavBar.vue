@@ -30,12 +30,12 @@ const authStore = useAuthStore()
                         <RouterLink to="/planets" class="nav-link">Planets</RouterLink>
                     </li>
                     <li class="nav-item">
-                        <RouterLink to="/login" v-if="!authStore.userLogin.isAuthenticated" class="nav-link">Login
-                        </RouterLink>
+                        <button class="nav-link btn" v-if="!authStore.userLogin.isAuthenticated" data-bs-toggle="modal"
+                            data-bs-target="#loginModal">Login</button>
                     </li>
                     <li class="nav-item">
-                        <RouterLink to="/register" v-if="!authStore.userLogin.isAuthenticated" class="nav-link">Register
-                        </RouterLink>
+                        <button class="nav-link btn" v-if="!authStore.userLogin.isAuthenticated" data-bs-toggle="modal"
+                            data-bs-target="#registerModal">Register</button>
                     </li>
                     <li class="nav-item">
                         <RouterLink to="/favorite" v-if="authStore.userLogin.isAuthenticated" class="nav-link">Favorite
@@ -49,6 +49,34 @@ const authStore = useAuthStore()
             </div>
         </div>
     </nav>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <LoginForm />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Register</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <RegisterForm />
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style scoped>
