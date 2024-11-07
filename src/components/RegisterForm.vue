@@ -1,7 +1,7 @@
 <script setup>
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/AuthStore'
 import { ref } from 'vue'
-import { useRoute, useRouter, RouterLink } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const username = ref('')
 const password = ref('')
@@ -15,12 +15,18 @@ const store = useAuthStore()
 function register() {
     if (isEmptyForm()) {
         alert('Fields cannot be empty')
-    } else if (password.value == passwordRepeat.value) {
-        if (!existUserInStorage(store.user, username.value)) {
-            store.user.push({ username: username.value, password: password.value })
-            const redirectPath = route.query.redirect || '/login'
-            router.push(redirectPath)
-        } else alert('The user exists, try another name')
+    } else if (password.value === passwordRepeat.value) {
+        if (store.register(username.value, password.value)) {
+            const registerModal = document.getElementById('registerModal')
+            const registerModalInstance = bootstrap.Modal.getInstance(registerModal)
+            registerModalInstance.hide()
+
+            const loginModal = document.getElementById('loginModal')
+            const loginModalInstance = new bootstrap.Modal(loginModal)
+            loginModalInstance.show()
+        } else {
+            alert('The user exists, try another name')
+        }
     } else {
         alert('Password does not match')
     }
@@ -55,7 +61,10 @@ function existUserInStorage(myArray, datName) {
         </div>
         <button class="btn btn-orange" type="submit">Register</button>
         <p class="mt-3 text-muted text-center">If you have an account
-            <RouterLink to="/login" class="text-orange">login</RouterLink>
+            <button type="button" class="btn btn-link text-orange p-0" data-bs-toggle="modal"
+                data-bs-target="#loginModal" data-bs-dismiss="modal">
+                login
+            </button>
         </p>
     </form>
 </template>

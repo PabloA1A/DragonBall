@@ -1,7 +1,7 @@
 <script setup>
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/AuthStore';
 import { ref } from 'vue'
-import { useRoute, useRouter, RouterLink } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const username = ref('')
 const password = ref('')
@@ -12,14 +12,13 @@ const router = useRouter()
 const store = useAuthStore()
 
 function login() {
-    store.user.forEach(function (element, index, array) {
-        if (username.value == element.username && password.value == element.password) {
-            store.userLogin.username = element.username
-            store.userLogin.isAuthenticated = true
-            const redirectPath = route.query.redirect || '/favorite'
-            router.push(redirectPath)
-        }
-    })
+    if (store.login(username.value, password.value)) {
+        const modal = document.getElementById('loginModal')
+        const modalInstance = bootstrap.Modal.getInstance(modal)
+        modalInstance.hide()
+    } else {
+        alert('Usuario o contraseña incorrectos')
+    }
 }
 </script>
 
@@ -35,7 +34,10 @@ function login() {
         </div>
         <button class="btn btn-orange" type="submit">Sign up</button>
         <p class="mt-3 text-muted text-center">If you don't have an account
-            <RouterLink to="/register" class="text-orange">register</RouterLink>
+            <button type="button" class="btn btn-link text-orange p-0" data-bs-toggle="modal"
+                data-bs-target="#registerModal" data-bs-dismiss="modal">
+                register
+            </button>
         </p>
     </form>
 </template>

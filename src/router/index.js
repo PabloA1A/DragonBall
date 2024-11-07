@@ -1,3 +1,7 @@
+import { useAuthStore } from '@/stores/AuthStore'
+import FavoriteView from '@/views/FavoriteView.vue'
+import HomeView from '@/views/HomeView.vue'
+import PlanetsView from '@/views/PlanetsView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -11,12 +15,12 @@ const router = createRouter({
     {
       path: '/planets',
       name: 'planets',
-      component: Planets
+      component: PlanetsView
     },
     {
       path: '/favorite',
       name: 'favorite',
-      component: Favorite,
+      component: FavoriteView,
       meta: { requiresAuth: true }
     },
   ],
@@ -27,7 +31,7 @@ router.beforeEach( (to, from) => {
   const store = useAuthStore()
 
   if (to.meta.requiresAuth && !store.userLogin.isAuthenticated) {
-    return { name: 'login' }
+    return { name: 'home' }
   }
 
 })
