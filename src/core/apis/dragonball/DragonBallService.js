@@ -1,6 +1,6 @@
 import { ref } from "vue"
 import Character from "../../models/Character.js"
-import Planets from "../../models/Planets.js"
+import Planets from "../../models/Planet.js"
 
 export default class DragonBallService {
     #repo

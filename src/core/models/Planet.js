@@ -1,4 +1,4 @@
-export default class Planets {
+export default class Planet {
     image
     name
     id
