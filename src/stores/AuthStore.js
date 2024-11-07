@@ -37,6 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
     const logout = () => {
         userLogin.value.username = ''
         userLogin.value.isAuthenticated = false
+        router.push('/')
     }
 
     return { users, userLogin, login, register, logout }

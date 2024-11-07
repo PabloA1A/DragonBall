@@ -4,6 +4,10 @@ import { RouterLink } from 'vue-router';
 
 const authStore = useAuthStore()
 
+const handleLogout = () => {
+    authStore.logout()
+}
+
 </script>
 
 <template>
@@ -42,8 +46,7 @@ const authStore = useAuthStore()
                         </RouterLink>
                     </li>
                     <li class="nav-item">
-                        <RouterLink to="/logout" v-if="authStore.userLogin.isAuthenticated" class="nav-link">Logout
-                        </RouterLink>
+                        <button class="nav-link btn" v-if="authStore.userLogin.isAuthenticated" @click="handleLogout">Logout</button>
                     </li>
                 </ul>
             </div>
