@@ -31,3 +31,5 @@ coverage
 
 .vscode
 .vscode/
+
+.env
