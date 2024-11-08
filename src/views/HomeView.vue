@@ -2,7 +2,8 @@
 import CardCharacter from '@/components/CardCharacter.vue';
 import DragonBallService from '@/core/apis/dragonball/DragonBallService';
 import Repository from '@/core/repository/Repository';
-import { ref } from 'vue';
+import { useCharacters } from '@/stores/CharactersStore'
+import { ref, computed } from 'vue';
 
 const uri = import.meta.env.VITE_API_ENDPOINT_CHARACTERS
 const repository = new Repository(uri)
@@ -18,13 +19,19 @@ async function setCharacters(page) {
   currentPage.value = data[2]
 }
 
-setCharacters(1)
+const charactersStore = useCharacters()
+const charactersToShow = computed(() => 
+  charactersStore.filteredCharacters.length > 0 
+    ? charactersStore.filteredCharacters 
+    : listCharacters.value
+)
 
+setCharacters(1)
 </script>
 
 <template>
   <div v-if="listCharacters" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-4">
-    <div v-for="character in listCharacters" :key="character.id" class="col">
+    <div v-for="character in charactersToShow" :key="character.id" class="col">
       <CardCharacter :id="character.id" :name="character.name" :maxKi="character.maxKi" :race="character.race"
         :description="character.description" :image="character.image"/>
     </div>

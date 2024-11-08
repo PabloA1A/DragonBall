@@ -1,4 +1,5 @@
 <script setup>
+import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/AuthStore'
 import { useCharacters } from '@/stores/CharactersStore'
 import { RouterLink, useRouter } from 'vue-router'
@@ -8,13 +9,36 @@ import RegisterForm from './RegisterForm.vue'
 const authStore = useAuthStore()
 const charactersStore = useCharacters()
 const router = useRouter()
+const searchTerm = ref('')
+const isInPlanetsPath = computed(() => router.currentRoute.value.path === '/planets')
 
 const handleLogout = () => {
     authStore.logout()
-    charactersStore.clearFavorites() 
+    charactersStore.clearFavorites()
     router.push('/')
 }
 
+const handleSearch = (event) => {
+    event.preventDefault()
+    if (searchTerm.value.trim()) {
+        if (isInPlanetsPath.value) {
+            const filteredPlanets = charactersStore.searchPlanets(searchTerm.value)
+            charactersStore.setFilteredPlanets(filteredPlanets)
+        } else {
+            const filteredCharacters = charactersStore.searchCharacters(searchTerm.value)
+            charactersStore.setFilteredCharacters(filteredCharacters)
+        }
+    }
+}
+
+const handleReset = () => {
+    searchTerm.value = ''
+    if (isInPlanetsPath.value) {
+        charactersStore.resetPlanets()
+    } else {
+        charactersStore.resetCharacters()
+    }
+}
 </script>
 
 <template>
@@ -24,16 +48,7 @@ const handleLogout = () => {
                 <img src="@/assets/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                 Dragon Ball
             </RouterLink>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <form class="d-flex invisible" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-                <ul class="navbar-nav ms-auto mb-2 mb-md-0"> 
+            <ul class="navbar-nav mb-2 mb-md-0">
                     <li class="nav-item">
                         <RouterLink to="/" class="nav-link">Home</RouterLink>
                     </li>
@@ -46,16 +61,33 @@ const handleLogout = () => {
                     </li>
                     <li class="nav-item">
                         <button class="nav-link btn" v-if="!authStore.userLogin.isAuthenticated" data-bs-toggle="modal"
-                            data-bs-target="#registerModal">Register</button>
+                        data-bs-target="#registerModal">Register</button>
                     </li>
                     <li class="nav-item">
-                        <RouterLink to="/favorite" v-if="authStore.userLogin.isAuthenticated" class="nav-link">Favorite</RouterLink>
+                        <RouterLink to="/favorite" v-if="authStore.userLogin.isAuthenticated" class="nav-link">Favorite
+                        </RouterLink>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link btn" v-if="authStore.userLogin.isAuthenticated" @click="handleLogout">Logout</button>
+                        <button class="nav-link btn" v-if="authStore.userLogin.isAuthenticated"
+                        @click="handleLogout">Logout</button>
                     </li>
                 </ul>
             </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <form class="d-flex ms-auto me-3" role="search" @submit="handleSearch">
+                    <input class="form-control me-2" type="search" placeholder="Search characters or planets"
+                        v-model="searchTerm" aria-label="Search">
+                    <button class="btn btn-light" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <button class="btn btn-secondary ms-2" type="button" @click="handleReset">
+                        Reset
+                    </button>
+                </form>
         </div>
     </nav>
 
@@ -91,5 +123,16 @@ const handleLogout = () => {
 <style scoped>
 .nav-link {
     color: #fff;
+}
+
+.form-control:focus {
+    border-color: #E94C1A;
+    box-shadow: 0 0 0 0.25rem rgba(233, 76, 26, 0.25);
+}
+
+.btn-light:hover {
+    background-color: #E94C1A;
+    color: white;
+    border-color: white;
 }
 </style>
