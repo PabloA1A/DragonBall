@@ -1,10 +1,12 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { useCharacters } from '@/stores/CharactersStore';
-import { useRoute } from 'vue-router';
+import { ref, computed } from 'vue'
+import { useCharacters } from '@/stores/CharactersStore'
+import { useAuthStore } from '@/stores/AuthStore'
+import { useRoute } from 'vue-router'
 
-const route = useRoute();
-const isInFavoritePath = computed(() => route.path === '/favorite');
+const route = useRoute()
+const authStore = useAuthStore()
+const isInFavoritePath = computed(() => route.path === '/favorite')
 
 const props = defineProps({
     id: {
@@ -31,22 +33,22 @@ const props = defineProps({
         type: String,
         required: true
     }
-});
+})
 
-const flip = ref("");
-const chartername = ref('');
-const chartermaxKi = ref('');
-const charterrace = ref('');
-const listCharactersStore = useCharacters();
+const flip = ref("")
+const chartername = ref('')
+const chartermaxKi = ref('')
+const charterrace = ref('')
+const listCharactersStore = useCharacters()
 
 function setflip() {
     flip.value = flip.value === "" ? "cardFlip" : "";
 }
 
 function setFavorite(id, name, maxKi, race, description, image) {
-    const temp = listCharactersStore.listCharacters.some(element => element.id === id);
+    const temp = listCharactersStore.listCharacters.some(element => element.id === id)
     if (temp) {
-        quitarStore(id);
+        quitarStore(id)
     } else {
         listCharactersStore.listCharacters.push({
             id,
@@ -55,42 +57,48 @@ function setFavorite(id, name, maxKi, race, description, image) {
             race,
             description,
             image,
-        });
+        })
     }
 }
 
 function quitarStore(id) {
-    const index = listCharactersStore.listCharacters.findIndex(el => el.id === id);
-    listCharactersStore.listCharacters.splice(index, 1);
+    const index = listCharactersStore.listCharacters.findIndex(el => el.id === id)
+    listCharactersStore.listCharacters.splice(index, 1)
 }
 
 function editCharacter(id) {
-    const index = listCharactersStore.listCharacters.findIndex(el => el.id === id);
+    const index = listCharactersStore.listCharacters.findIndex(el => el.id === id)
     if (chartername.value !== "") {
-        listCharactersStore.listCharacters[index].name = chartername.value;
+        listCharactersStore.listCharacters[index].name = chartername.value
     }
     if (chartermaxKi.value !== "") {
-        listCharactersStore.listCharacters[index].maxKi = chartermaxKi.value;
+        listCharactersStore.listCharacters[index].maxKi = chartermaxKi.value
     }
     if (charterrace.value !== "") {
-        listCharactersStore.listCharacters[index].race = charterrace.value;
+        listCharactersStore.listCharacters[index].race = charterrace.value
     }
 }
+
+const isInFavorites = computed(() => {
+    return listCharactersStore.listCharacters.some(element => element.id === props.id)
+})
+
+const isAuthenticated = computed(() => {
+    return authStore.userLogin.isAuthenticated
+})
+
 </script>
 
 <template>
     <div class="card bg-card position-relative" :class="flip">
         <div class="side">
-            <a v-if="!isInFavoritePath" class="btn btn-trasparent front"
-                @click="setFavorite(id, name, maxKi, race, description, image)" role="button">
-                <i class="bi text-danger bi-heart"></i>
+            <a v-if="isAuthenticated" class="btn btn-trasparent front" 
+               @click="setFavorite(id, name, maxKi, race, description, image)" 
+               role="button">
+                <i class="bi text-danger" :class="isInFavorites ? 'bi-heart-fill' : 'bi-heart'"></i>
             </a>
-            <a v-if="isInFavoritePath" class="btn btn-trasparent front"
-                @click="setFavorite(id, name, maxKi, race, description, image)" role="button">
-                <i class="bi text-danger bi-heart-fill"></i>
-            </a>
-            <a v-if="isInFavoritePath" type="button" class="btn btn-trasparent front lado" data-bs-toggle="modal"
-                :data-bs-target="'#Modal' + id">
+            <a v-if="isInFavoritePath" type="button" class="btn btn-trasparent front lado" 
+               data-bs-toggle="modal" :data-bs-target="'#Modal' + id">
                 <i class="bi bi-pencil-square"></i>
             </a>
             <img :src="image" class="card-img image-size-back" :alt=name>
@@ -106,7 +114,7 @@ function editCharacter(id) {
         </div>
         <div class="side back">
             <div class="position-absolute p-3">
-                <p class="font-monospace btn btn-trasparent" @click="setflip">{{ description }}</p>
+                <p class="font-monospace">{{ description }}</p>
             </div>
         </div>
     </div>
@@ -181,7 +189,7 @@ function editCharacter(id) {
     transition: all 1s ease-in-out;
 }
 
-.cardFlip {
+.card:hover {
     transform: rotateY(180deg);
 }
 

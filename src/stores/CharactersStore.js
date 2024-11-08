@@ -2,8 +2,11 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useCharacters = defineStore('characters', () => {
-
   const listCharacters = ref([])
 
-  return { listCharacters }
+  const clearFavorites = () => {
+    listCharacters.value = []
+  }
+
+  return { listCharacters, clearFavorites }
 })

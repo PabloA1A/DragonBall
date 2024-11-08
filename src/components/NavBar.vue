@@ -1,13 +1,18 @@
 <script setup>
-import { useAuthStore } from '@/stores/AuthStore';
-import { RouterLink } from 'vue-router';
-import LoginForm from './LoginForm.vue';
-import RegisterForm from './RegisterForm.vue';
+import { useAuthStore } from '@/stores/AuthStore'
+import { useCharacters } from '@/stores/CharactersStore'
+import { RouterLink, useRouter } from 'vue-router'
+import LoginForm from './LoginForm.vue'
+import RegisterForm from './RegisterForm.vue'
 
 const authStore = useAuthStore()
+const charactersStore = useCharacters()
+const router = useRouter()
 
 const handleLogout = () => {
     authStore.logout()
+    charactersStore.clearFavorites() 
+    router.push('/')
 }
 
 </script>
@@ -28,7 +33,7 @@ const handleLogout = () => {
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
-                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <ul class="navbar-nav ms-auto mb-2 mb-md-0"> 
                     <li class="nav-item">
                         <RouterLink to="/" class="nav-link">Home</RouterLink>
                     </li>
@@ -44,8 +49,7 @@ const handleLogout = () => {
                             data-bs-target="#registerModal">Register</button>
                     </li>
                     <li class="nav-item">
-                        <RouterLink to="/favorite" v-if="authStore.userLogin.isAuthenticated" class="nav-link">Favorite
-                        </RouterLink>
+                        <RouterLink to="/favorite" v-if="authStore.userLogin.isAuthenticated" class="nav-link">Favorite</RouterLink>
                     </li>
                     <li class="nav-item">
                         <button class="nav-link btn" v-if="authStore.userLogin.isAuthenticated" @click="handleLogout">Logout</button>
