@@ -2,6 +2,22 @@
 
 Este proyecto es una aplicación web desarrollada con Vue 3 y Vite, que permite a los usuarios buscar y gestionar personajes y planetas del universo Dragon Ball. La aplicación incluye funcionalidades de autenticación, búsqueda, favoritos y más.
 
+## Vista Previa
+
+![Home sin login](Homesinlogin.png)
+
+![Registro](Registro.png)
+
+![Login](Login.png)
+
+![Home Logueado](Homelogueado.png)
+
+![Planetas](Planetas.png)
+
+![Favoritos](Favoritos.png)
+
+![Modificar favoritos](Modificarfavoritos.png)
+
 ## Estructura del Proyecto
 
 env .gitignore .vscode/ extensions.json settings.json index.html jsconfig.json main.js package.json public/ README.md src/ App.vue assets/ base.css main.css components/ tests/ ... CardCharacter.vue CardPlanet.vue icons/ Fav.vue LoginForm.vue NavBar.vue RegisterForm.vue core/ apis/ models/ repository/ router/ index.js stores/ AuthStore.js CharactersStore.js views/ FavoriteView.vue HomeView.vue PlanetsView.vue vite.config.js vitest.config.js
